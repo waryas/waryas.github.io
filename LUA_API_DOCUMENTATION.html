@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Rivals - Lua API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #151515;
+            --accent-primary: #00ff00;
+            --accent-secondary: #00cc00;
+            --accent-dim: #00aa00;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #707070;
+            --code-bg: #0a0a0a;
+            --border-color: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        nav {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        nav a:hover {
+            color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        section {
+            background: var(--bg-secondary);
+            padding: 2.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-primary);
+            border-bottom: 2px solid var(--accent-primary);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-secondary);
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--accent-primary);
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e6edf3;
+            font-size: 0.95rem;
+            border: none;
+        }
+
+        .keyword { color: #ff7b72; }
+        .function { color: #d2a8ff; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .number { color: #79c0ff; }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            color: var(--accent-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--bg-tertiary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid;
+        }
+
+        .badge-type {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .badge-returns {
+            background: var(--bg-tertiary);
+            color: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+        }
+
+        .method-signature {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-secondary);
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .warning {
+            background: rgba(255, 100, 100, 0.1);
+            border-left: 3px solid #ff6464;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 100, 100, 0.3);
+        }
+
+        .info {
+            background: rgba(0, 255, 0, 0.05);
+            border-left: 3px solid var(--accent-primary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .example {
+            margin: 1.5rem 0;
+        }
+
+        .example-title {
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-tertiary);
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        strong {
+            color: var(--accent-primary);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+            .container { padding: 1rem; }
+            section { padding: 1.5rem; }
+            nav ul { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Marvel Rivals Lua API</h1>
+            <p class="subtitle">Complete scripting reference for game automation</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#script-config">Script Config</a></li>
+                <li><a href="#context">Game Context</a></li>
+                <li><a href="#actors">Actors</a></li>
+                <li><a href="#abilities">Abilities</a></li>
+                <li><a href="#helpers">Helper Functions</a></li>
+                <li><a href="#examples">Examples</a></li>
+            </ul>
+        </nav>
+
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>The Marvel Rivals Lua API provides complete access to the game state through a <code>GameContext</code> object that is updated every frame. Your Lua scripts receive this context and can execute game actions through helper functions.</p>
+
+            <div class="info">
+                <strong>Entry Points:</strong> Your script must define:
+                <ul>
+                    <li><code>on_game_tick(ctx, helpers, config)</code> - Called every frame with game context, helper functions, and script config</li>
+                    <li><code>on_config_ui(builder)</code> - (Optional) Define configurable settings for your script</li>
+                    <li><code>on_config_changed(config_name)</code> - (Optional) Called when a config value changes</li>
+                </ul>
+            </div>
+
+            <div class="example">
+                <div class="example-title">Basic Script Structure</div>
+                <pre><code><span class="comment">-- Define script configuration UI (optional)</span>
+<span class="keyword">function</span> <span class="function">on_config_ui</span>(builder)
+    builder:AddBoolean(<span class="string">"enable_feature"</span>, <span class="string">"Enable Feature"</span>, <span class="keyword">true</span>, <span class="string">"Enable this feature"</span>)
+    builder:AddSlider(<span class="string">"distance"</span>, <span class="string">"Max Distance"</span>, <span class="number">15.0</span>, <span class="number">5.0</span>, <span class="number">50.0</span>, <span class="string">"Maximum distance in meters"</span>)
+<span class="keyword">end</span>
+
+<span class="comment">-- Main game tick function (called every frame)</span>
+<span class="keyword">function</span> <span class="function">on_game_tick</span>(ctx, helpers, config)
+    <span class="comment">-- Anti-spam check</span>
+    <span class="keyword">if not</span> helpers.<span class="function">CanDoAction</span>() <span class="keyword">then</span>
+        <span class="keyword">return true</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">-- Access config values</span>
+    <span class="keyword">if</span> config.enable_feature <span class="keyword">then</span>
+        <span class="comment">-- Your logic here</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">return true</span>
+<span class="keyword">end</span></code></pre>
+            </div>
+        </section>
+
+        <section id="script-config">
+            <h2>Script Configuration</h2>
+            <p>Scripts can define configurable settings that appear in the GUI. Values are persisted across sessions and hero swaps.</p>
+
+            <h3>Config Builder API</h3>
+            <p>The <code>builder</code> parameter in <code>on_config_ui</code> provides methods to add config entries:</p>
+
+            <h4>AddBoolean(name, display, default, tooltip)</h4>
+            <div class="method-signature">
+                builder:AddBoolean(name: string, display: string, default: bool, tooltip: string)
+            </div>
+            <ul>
+                <li><code>name</code> - Internal identifier for accessing the value</li>
+                <li><code>display</code> - Display name shown in GUI</li>
+                <li><code>default</code> - Default value (true/false)</li>
+                <li><code>tooltip</code> - Optional description shown on hover</li>
+            </ul>
+
+            <h4>AddSlider(name, display, default, min, max, tooltip)</h4>
+            <div class="method-signature">
+                builder:AddSlider(name: string, display: string, default: float, min: float, max: float, tooltip: string)
+            </div>
+            <ul>
+                <li><code>name</code> - Internal identifier for accessing the value</li>
+                <li><code>display</code> - Display name shown in GUI</li>
+                <li><code>default</code> - Default value</li>
+                <li><code>min</code> - Minimum value</li>
+                <li><code>max</code> - Maximum value</li>
+                <li><code>tooltip</code> - Optional description shown on hover</li>
+            </ul>
+
+            <h3>Accessing Config Values</h3>
+            <p>In <code>on_game_tick</code>, access config values through the <code>config</code> parameter:</p>
+            <pre><code><span class="keyword">function</span> <span class="function">on_game_tick</span>(ctx, helpers, config)
+    <span class="comment">-- Access boolean</span>
+    <span class="keyword">if</span> config.enable_dash <span class="keyword">then</span>
+        <span class="comment">-- Use dash ability</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">-- Access slider value</span>
+    <span class="keyword">if</span> actor.distance_meters < config.max_distance <span class="keyword">then</span>
+        <span class="comment">-- Actor is in range</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+        </section>
+
+        <section id="context">
+            <h2>Game Context</h2>
+            <p>The <code>ctx</code> parameter contains all game state information updated every frame.</p>
+
+            <h3>Local Player</h3>
+            <p>Access your own player information via <code>ctx.local_player</code></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>pawn</code></td>
+                        <td><span class="badge badge-type">uint64</span></td>
+                        <td>Player pawn pointer</td>
+                    </tr>
+                    <tr>
+                        <td><code>controller</code></td>
+                        <td><span class="badge badge-type">uint64</span></td>
+                        <td>Player controller pointer</td>
+                    </tr>
+                    <tr>
+                        <td><code>hero_id</code></td>
+                        <td><span class="badge badge-type">uint32</span></td>
+                        <td>Current hero ID</td>
+                    </tr>
+                    <tr>
+                        <td><code>team_id</code></td>
+                        <td><span class="badge badge-type">int</span></td>
+                        <td>Team ID</td>
+                    </tr>
+                    <tr>
+                        <td><code>camera_location</code></td>
+                        <td><span class="badge badge-type">FVector</span></td>
+                        <td>Camera world position {X, Y, Z}</td>
+                    </tr>
+                    <tr>
+                        <td><code>camera_rotation</code></td>
+                        <td><span class="badge badge-type">FVector</span></td>
+                        <td>Camera rotation {X, Y, Z}</td>
+                    </tr>
+                    <tr>
+                        <td><code>camera_fov</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Field of view in degrees</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Screen Information</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>screen_width</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Screen width in pixels</td>
+                    </tr>
+                    <tr>
+                        <td><code>screen_height</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Screen height in pixels</td>
+                    </tr>
+                    <tr>
+                        <td><code>screen_center_x</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Screen center X coordinate</td>
+                    </tr>
+                    <tr>
+                        <td><code>screen_center_y</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Screen center Y coordinate</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Input State</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>aimbot_key_pressed</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>True if aimbot key is currently held</td>
+                    </tr>
+                    <tr>
+                        <td><code>trigger_key_pressed</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>True if trigger key is currently held</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Aimbot Target Information</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>has_aimbot_target</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>True if aimbot has locked onto a target</td>
+                    </tr>
+                    <tr>
+                        <td><code>aimbot_target_actor_state</code></td>
+                        <td><span class="badge badge-type">uint64</span></td>
+                        <td>Actor state of current aimbot target</td>
+                    </tr>
+                    <tr>
+                        <td><code>aimbot_target_bone_index</code></td>
+                        <td><span class="badge badge-type">int</span></td>
+                        <td>Bone index being targeted (-1 if none)</td>
+                    </tr>
+                    <tr>
+                        <td><code>aimbot_target_fov</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>FOV distance to target</td>
+                    </tr>
+                    <tr>
+                        <td><code>aimbot_target_score</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Target priority score</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="abilities">
+            <h2>Hero Abilities</h2>
+            <p>The <code>ctx.abilities</code> table contains information about the local player's hero abilities, organized by input binding.</p>
+
+            <div class="info">
+                <strong>Note:</strong> Abilities are indexed by their EAbilityInputBinds value (0-36). Each bind can contain multiple abilities (indexed starting at 1).
+            </div>
+
+            <h3>Ability Structure</h3>
+            <p>Access abilities like: <code>ctx.abilities[bind_index][ability_index]</code></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>can_activate</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>Whether the ability can be activated now</td>
+                    </tr>
+                    <tr>
+                        <td><code>can_preactivate</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>Whether the ability can be pre-activated</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_activated</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>Whether the ability is currently activated</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_blocked</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>Whether the ability is blocked</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_on_cooldown</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>Whether the ability is on cooldown</td>
+                    </tr>
+                    <tr>
+                        <td><code>energy_percent</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Energy percentage (0.0 - 1.0)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Common Ability Binds</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bind Index</th>
+                        <th>Ability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>11</code></td><td>Primary Attack</td></tr>
+                    <tr><td><code>12</code></td><td>Secondary Attack</td></tr>
+                    <tr><td><code>15</code></td><td>Melee Attack</td></tr>
+                    <tr><td><code>16</code></td><td>Ability 1</td></tr>
+                    <tr><td><code>17</code></td><td>Ability 2</td></tr>
+                    <tr><td><code>18</code></td><td>Ability 3</td></tr>
+                    <tr><td><code>20</code></td><td>Ultimate</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Example Usage</h3>
+            <pre><code><span class="comment">-- Check if ultimate (bind 20) is ready</span>
+<span class="keyword">if</span> ctx.abilities[<span class="number">20</span>] <span class="keyword">and</span> ctx.abilities[<span class="number">20</span>][<span class="number">1</span>] <span class="keyword">then</span>
+    <span class="keyword">local</span> ult = ctx.abilities[<span class="number">20</span>][<span class="number">1</span>]
+    <span class="keyword">if</span> ult.can_activate <span class="keyword">and not</span> ult.is_blocked <span class="keyword">then</span>
+        <span class="comment">-- Ultimate is ready to use!</span>
+        helpers.<span class="function">UseAbility</span>(helpers.ULTIMATE)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+        </section>
+
+        <section id="actors">
+            <h2>Actor Context</h2>
+            <p>The <code>ctx.actors</code> array contains information about all players in the game. Each actor has complete data about their state, position, health, and bones.</p>
+
+            <div class="info">
+                <strong>Note:</strong> Actors are 1-indexed in Lua. Use <code>ipairs(ctx.actors)</code> to iterate through them. Distance is calculated from your character's pawn position (not camera), so it remains constant regardless of where you're looking.
+            </div>
+
+            <h3>Basic Information</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>actor_state</code></td>
+                        <td><span class="badge badge-type">uint64</span></td>
+                        <td>Unique actor state pointer</td>
+                    </tr>
+                    <tr>
+                        <td><code>pawn</code></td>
+                        <td><span class="badge badge-type">uint64</span></td>
+                        <td>Actor pawn pointer</td>
+                    </tr>
+                    <tr>
+                        <td><code>hero_id</code></td>
+                        <td><span class="badge badge-type">uint32</span></td>
+                        <td>Hero character ID</td>
+                    </tr>
+                    <tr>
+                        <td><code>team_id</code></td>
+                        <td><span class="badge badge-type">int</span></td>
+                        <td>Team ID</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_alive</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>True if actor is alive</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_same_team</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>True if on same team as local player</td>
+                    </tr>
+                    <tr>
+                        <td><code>is_visible</code></td>
+                        <td><span class="badge badge-type">bool</span></td>
+                        <td>True if actor is visible (not behind walls)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Health Information</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>current_health</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Current HP value</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_health</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Maximum HP value</td>
+                    </tr>
+                    <tr>
+                        <td><code>health_percentage</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Health as percentage (0.0 - 1.0)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Position & Movement</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>world_position</code></td>
+                        <td><span class="badge badge-type">FVector</span></td>
+                        <td>World position {X, Y, Z}</td>
+                    </tr>
+                    <tr>
+                        <td><code>velocity</code></td>
+                        <td><span class="badge badge-type">FVector</span></td>
+                        <td>Movement velocity {X, Y, Z}</td>
+                    </tr>
+                    <tr>
+                        <td><code>distance_world</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Distance from local player (world units)</td>
+                    </tr>
+                    <tr>
+                        <td><code>distance_meters</code></td>
+                        <td><span class="badge badge-type">float</span></td>
+                        <td>Distance from local player (meters) - based on character position</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Bone Positions (Screen Space)</h3>
+            <p>All bone positions in screen coordinates. All FVector with {X, Y, Z} where Z is depth.</p>
+
+            <div class="grid">
+                <div class="card">
+                    <h4>Head & Torso</h4>
+                    <ul>
+                        <li><code>bone_head</code></li>
+                        <li><code>bone_spine_01</code></li>
+                        <li><code>bone_pelvis</code></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Arms (Left)</h4>
+                    <ul>
+                        <li><code>bone_upperarm_l</code></li>
+                        <li><code>bone_lowerarm_l</code></li>
+                        <li><code>bone_hand_l</code></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Arms (Right)</h4>
+                    <ul>
+                        <li><code>bone_upperarm_r</code></li>
+                        <li><code>bone_lowerarm_r</code></li>
+                        <li><code>bone_hand_r</code></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Legs (Left)</h4>
+                    <ul>
+                        <li><code>bone_thigh_l</code></li>
+                        <li><code>bone_calf_l</code></li>
+                        <li><code>bone_foot_l</code></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Legs (Right)</h4>
+                    <ul>
+                        <li><code>bone_thigh_r</code></li>
+                        <li><code>bone_calf_r</code></li>
+                        <li><code>bone_foot_r</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Bone Positions (World Space)</h3>
+            <p>Same bones but in world coordinates. Append <code>_world</code> to any screen bone name:</p>
+            <ul>
+                <li><code>bone_head_world</code>, <code>bone_spine_01_world</code>, <code>bone_pelvis_world</code></li>
+                <li><code>bone_upperarm_l_world</code>, <code>bone_lowerarm_l_world</code>, <code>bone_hand_l_world</code></li>
+                <li><code>bone_upperarm_r_world</code>, <code>bone_lowerarm_r_world</code>, <code>bone_hand_r_world</code></li>
+                <li><code>bone_thigh_l_world</code>, <code>bone_calf_l_world</code>, <code>bone_foot_l_world</code></li>
+                <li><code>bone_thigh_r_world</code>, <code>bone_calf_r_world</code>, <code>bone_foot_r_world</code></li>
+            </ul>
+        </section>
+
+        <section id="helpers">
+            <h2>Helper Functions</h2>
+            <p>The <code>helpers</code> parameter provides utility functions for game interaction and queries.</p>
+
+            <div class="warning">
+                <strong>Anti-Spam Protection:</strong> All input functions share a 50ms global cooldown. Use <code>CanDoAction()</code> to check before sending inputs.
+            </div>
+
+            <h3>CanDoAction()</h3>
+            <div class="method-signature">
+                helpers.CanDoAction() → <span class="badge badge-returns">bool</span>
+            </div>
+            <p>Checks if the anti-spam timer allows a new action.</p>
+            <ul>
+                <li><strong>Returns:</strong> <code>true</code> if at least 50ms have passed since the last action</li>
+            </ul>
+
+            <h3>UseAbility(ability_id)</h3>
+            <div class="method-signature">
+                helpers.UseAbility(ability_id: <span class="badge badge-type">int</span>) → <span class="badge badge-returns">bool</span>
+            </div>
+            <p>Uses an ability by its enum constant (preferred over SendSkill).</p>
+            <ul>
+                <li><strong>Parameters:</strong> <code>ability_id</code> - Use constants like helpers.PRIMARY_ATTACK, helpers.ULTIMATE, etc.</li>
+                <li><strong>Returns:</strong> <code>true</code> if input was sent, <code>false</code> if blocked by cooldown</li>
+            </ul>
+
+            <h4>Ability Constants</h4>
+            <ul>
+                <li><code>helpers.PRIMARY_ATTACK</code></li>
+                <li><code>helpers.SECONDARY_ATTACK</code></li>
+                <li><code>helpers.RELOAD</code></li>
+                <li><code>helpers.MELEE_ATTACK</code></li>
+                <li><code>helpers.ABILITY_1</code></li>
+                <li><code>helpers.ABILITY_2</code></li>
+                <li><code>helpers.ABILITY_3</code></li>
+                <li><code>helpers.ULTIMATE</code></li>
+                <li><code>helpers.TEAMUP_ABILITY_1</code></li>
+                <li><code>helpers.TEAMUP_ABILITY_2</code></li>
+                <li><code>helpers.TEAMUP_ABILITY_3</code></li>
+            </ul>
+
+            <div class="example">
+                <div class="example-title">Example Usage</div>
+                <pre><code><span class="keyword">if</span> helpers.<span class="function">CanDoAction</span>() <span class="keyword">then</span>
+    helpers.<span class="function">UseAbility</span>(helpers.ULTIMATE)
+<span class="keyword">end</span></code></pre>
+            </div>
+
+            <h3>IsLookingAt(actor_state, max_fov)</h3>
+            <div class="method-signature">
+                helpers.IsLookingAt(actor_state: <span class="badge badge-type">uint64</span>, max_fov: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">bool</span>
+            </div>
+            <p>Checks if the camera is aimed at a specific actor within a FOV threshold (screen-space pixels from center).</p>
+            <ul>
+                <li><strong>Parameters:</strong>
+                    <ul>
+                        <li><code>actor_state</code> - The actor's state pointer</li>
+                        <li><code>max_fov</code> - Maximum FOV distance in screen pixels (default: 5.0)</li>
+                    </ul>
+                </li>
+                <li><strong>Returns:</strong> <code>true</code> if actor is alive, visible, and within FOV</li>
+            </ul>
+
+            <h3>GetClosestEnemy()</h3>
+            <div class="method-signature">
+                helpers.GetClosestEnemy() → <span class="badge badge-returns">ActorContext | nil</span>
+            </div>
+            <p>Returns the closest alive enemy actor, regardless of visibility.</p>
+
+            <h3>GetClosestVisibleEnemy()</h3>
+            <div class="method-signature">
+                helpers.GetClosestVisibleEnemy() → <span class="badge badge-returns">ActorContext | nil</span>
+            </div>
+            <p>Returns the closest visible (not behind walls) alive enemy actor.</p>
+
+            <h3>GetAimbotTarget()</h3>
+            <div class="method-signature">
+                helpers.GetAimbotTarget() → <span class="badge badge-returns">ActorContext | nil</span>
+            </div>
+            <p>Returns the actor currently locked by the aimbot, if any.</p>
+
+            <h3>CountEnemiesInRange(distance)</h3>
+            <div class="method-signature">
+                helpers.CountEnemiesInRange(distance: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">int</span>
+            </div>
+            <p>Counts all alive enemy actors within a specified distance (meters).</p>
+
+            <h3>CountVisibleEnemiesInRange(distance)</h3>
+            <div class="method-signature">
+                helpers.CountVisibleEnemiesInRange(distance: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">int</span>
+            </div>
+            <p>Counts visible (not behind walls) alive enemy actors within a specified distance (meters).</p>
+
+            <h3>CountEnemiesInFOV(fov, max_distance)</h3>
+            <div class="method-signature">
+                helpers.CountEnemiesInFOV(fov: <span class="badge badge-type">float</span>, max_distance: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">int</span>
+            </div>
+            <p>Counts enemies within FOV (screen-space distance from center in pixels).</p>
+            <ul>
+                <li><strong>Parameters:</strong>
+                    <ul>
+                        <li><code>fov</code> - Maximum screen-space distance in pixels</li>
+                        <li><code>max_distance</code> - Optional distance filter in meters (omit or use -1 for unlimited)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>CountVisibleEnemiesInFOV(fov, max_distance)</h3>
+            <div class="method-signature">
+                helpers.CountVisibleEnemiesInFOV(fov: <span class="badge badge-type">float</span>, max_distance: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">int</span>
+            </div>
+            <p>Counts visible enemies within FOV.</p>
+
+            <h3>CountAlliesInFOV(fov, max_distance)</h3>
+            <div class="method-signature">
+                helpers.CountAlliesInFOV(fov: <span class="badge badge-type">float</span>, max_distance: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">int</span>
+            </div>
+            <p>Counts allies within FOV (screen-space distance from center in pixels).</p>
+
+            <h3>CountVisibleAlliesInFOV(fov, max_distance)</h3>
+            <div class="method-signature">
+                helpers.CountVisibleAlliesInFOV(fov: <span class="badge badge-type">float</span>, max_distance: <span class="badge badge-type">float</span>) → <span class="badge badge-returns">int</span>
+            </div>
+            <p>Counts visible allies within FOV.</p>
+
+            <div class="example">
+                <div class="example-title">FOV Helper Examples</div>
+                <pre><code><span class="comment">-- Count all enemies within 100 pixel FOV (any distance)</span>
+<span class="keyword">local</span> enemy_count = helpers.<span class="function">CountEnemiesInFOV</span>(<span class="number">100</span>)
+
+<span class="comment">-- Count visible enemies within 100 pixel FOV and 20 meters</span>
+<span class="keyword">local</span> visible_enemies = helpers.<span class="function">CountVisibleEnemiesInFOV</span>(<span class="number">100</span>, <span class="number">20</span>)
+
+<span class="comment">-- Count allies within 150 pixel FOV and 30 meters</span>
+<span class="keyword">local</span> visible_allies = helpers.<span class="function">CountVisibleAlliesInFOV</span>(<span class="number">150</span>, <span class="number">30</span>)</code></pre>
+            </div>
+        </section>
+
+        <section id="examples">
+            <h2>Complete Examples</h2>
+
+            <h3>Psylocke Auto-Combo Script</h3>
+            <pre><code><span class="comment">-- Psylocke: Auto dash on low-health enemies</span>
+<span class="keyword">function</span> <span class="function">on_config_ui</span>(builder)
+    builder:AddBoolean(<span class="string">"enable_dash"</span>, <span class="string">"Enable Dash"</span>, <span class="keyword">true</span>, <span class="string">"Auto-dash to low health enemies"</span>)
+    builder:AddSlider(<span class="string">"dash_distance"</span>, <span class="string">"Dash Distance"</span>, <span class="number">15.0</span>, <span class="number">5.0</span>, <span class="number">30.0</span>)
+    builder:AddSlider(<span class="string">"low_health_threshold"</span>, <span class="string">"Low Health %"</span>, <span class="number">50.0</span>, <span class="number">10.0</span>, <span class="number">100.0</span>)
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> <span class="function">on_game_tick</span>(ctx, helpers, config)
+    <span class="keyword">if not</span> helpers.<span class="function">CanDoAction</span>() <span class="keyword">then return true end</span>
+
+    <span class="comment">-- Don't use abilities while ultimate is active</span>
+    <span class="keyword">if</span> ctx.abilities[<span class="number">20</span>] <span class="keyword">and</span> ctx.abilities[<span class="number">20</span>][<span class="number">1</span>] <span class="keyword">and</span>
+       ctx.abilities[<span class="number">20</span>][<span class="number">1</span>].is_activated <span class="keyword">then</span>
+        <span class="keyword">return true</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">for</span> _, actor <span class="keyword">in</span> <span class="function">ipairs</span>(ctx.actors) <span class="keyword">do</span>
+        <span class="keyword">if</span> actor.actor_state ~= <span class="keyword">nil and not</span> actor.is_same_team <span class="keyword">and</span>
+           actor.is_alive <span class="keyword">and</span> actor.is_visible <span class="keyword">then</span>
+
+            <span class="comment">-- Check dash attack (Ability 2)</span>
+            <span class="keyword">if</span> config.enable_dash <span class="keyword">and</span>
+               ctx.abilities[<span class="number">17</span>] <span class="keyword">and</span> ctx.abilities[<span class="number">17</span>][<span class="number">1</span>] <span class="keyword">and</span>
+               ctx.abilities[<span class="number">17</span>][<span class="number">1</span>].can_activate <span class="keyword">and</span>
+               <span class="keyword">not</span> ctx.abilities[<span class="number">17</span>][<span class="number">1</span>].is_blocked <span class="keyword">and</span>
+               actor.current_health < config.low_health_threshold <span class="keyword">and</span>
+               actor.distance_meters < config.dash_distance <span class="keyword">and</span>
+               helpers.<span class="function">IsLookingAt</span>(actor.actor_state, <span class="number">100</span>) <span class="keyword">then</span>
+
+                helpers.<span class="function">UseAbility</span>(helpers.ABILITY_2)
+                <span class="keyword">return true</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">return true</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Smart AOE Ultimate</h3>
+            <pre><code><span class="comment">-- Use ultimate when multiple enemies are in FOV</span>
+<span class="keyword">function</span> <span class="function">on_config_ui</span>(builder)
+    builder:AddSlider(<span class="string">"min_enemies"</span>, <span class="string">"Min Enemies for Ult"</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>)
+    builder:AddSlider(<span class="string">"ult_fov"</span>, <span class="string">"Ultimate FOV"</span>, <span class="number">200</span>, <span class="number">50</span>, <span class="number">500</span>)
+    builder:AddSlider(<span class="string">"ult_range"</span>, <span class="string">"Ultimate Range (m)"</span>, <span class="number">15</span>, <span class="number">5</span>, <span class="number">30</span>)
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> <span class="function">on_game_tick</span>(ctx, helpers, config)
+    <span class="keyword">if not</span> helpers.<span class="function">CanDoAction</span>() <span class="keyword">then return true end</span>
+
+    <span class="comment">-- Check if ultimate is ready</span>
+    <span class="keyword">if</span> ctx.abilities[<span class="number">20</span>] <span class="keyword">and</span> ctx.abilities[<span class="number">20</span>][<span class="number">1</span>] <span class="keyword">then</span>
+        <span class="keyword">local</span> ult = ctx.abilities[<span class="number">20</span>][<span class="number">1</span>]
+        <span class="keyword">if</span> ult.can_activate <span class="keyword">and not</span> ult.is_blocked <span class="keyword">then</span>
+            <span class="comment">-- Count visible enemies in FOV and range</span>
+            <span class="keyword">local</span> enemies = helpers.<span class="function">CountVisibleEnemiesInFOV</span>(config.ult_fov, config.ult_range)
+
+            <span class="keyword">if</span> enemies >= config.min_enemies <span class="keyword">then</span>
+                helpers.<span class="function">UseAbility</span>(helpers.ULTIMATE)
+                <span class="keyword">return true</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">return true</span>
+<span class="keyword">end</span></code></pre>
+        </section>
+
+        <footer>
+            <p>Marvel Rivals Lua API Documentation</p>
+            <p style="margin-top: 0.5rem; color: var(--text-tertiary);">LuaJIT 2.1 with Maximum Aggressive Optimization</p>
+        </footer>
+    </div>
+</body>
+</html>
